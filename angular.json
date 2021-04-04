@@ -36,7 +36,7 @@
       "projectType": "application",
       "root": "apps/example",
       "sourceRoot": "apps/example/src",
-      "prefix": "zy2ba-components",
+      "prefix": "zy2ba",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",

@@ -14,7 +14,7 @@
           "error",
           {
             "type": "attribute",
-            "prefix": "zy2ba-components",
+            "prefix": "zy2ba",
             "style": "camelCase"
           }
         ],
@@ -22,7 +22,7 @@
           "error",
           {
             "type": "element",
-            "prefix": "zy2ba-components",
+            "prefix": "zy2ba",
             "style": "kebab-case"
           }
         ]
