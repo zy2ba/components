@@ -1,23 +1,16 @@
-import {
-  Component,
-  Inject,
-  Input,
-  OnChanges,
-  SimpleChanges,
-} from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NgImageSliderService } from '../../services/ng-image-slider.service';
 
-const youtubeRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/,
+const youtubeRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\?v=)([^#&?]*).*/,
   validFileExtensions = ['jpeg', 'jpg', 'gif', 'png'],
   validVideoExtensions = ['mp4'];
 
 @Component({
   selector: 'ng-image-slider-slide',
-  templateUrl: './slider-custom-image.component.html',
+  templateUrl: './slide.component.html',
 })
-export class SliderCustomImageComponent implements OnChanges {
+export class SlideComponent implements OnChanges {
   YOUTUBE = 'youtube';
   IMAGE = 'image';
   VIDEO = 'video';
@@ -42,16 +35,11 @@ export class SliderCustomImageComponent implements OnChanges {
 
   constructor(
     public imageSliderService: NgImageSliderService,
-    private sanitizer: DomSanitizer,
-    // gets building error with Document type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    @Inject(DOCUMENT) document: any
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (
-      this.imageUrl &&
-      this.imageUrl &&
       this.imageUrl &&
       typeof this.imageUrl === 'string' &&
       ((changes.imageUrl && changes.imageUrl.firstChange) || this.videoAutoPlay)

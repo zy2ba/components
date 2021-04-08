@@ -19,10 +19,9 @@ import { NisImage } from '../../type/img.type';
 
 @Component({
   selector: 'ng-image-slider-lightbox',
-  templateUrl: './slider-lightbox.component.html',
+  templateUrl: './lightbox.component.html',
 })
-export class SliderLightboxComponent
-  implements OnInit, AfterViewInit, OnDestroy {
+export class LightboxComponent implements OnDestroy {
   // for swipe event
   private swipeLightboxImgCoord?: [number, number];
   private swipeLightboxImgTime?: number;
@@ -60,6 +59,8 @@ export class SliderLightboxComponent
     private cdRef: ChangeDetectorRef,
     private sanitizer: DomSanitizer,
     private elRef: ElementRef,
+    // gets building error with Document type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     @Inject(DOCUMENT) private document: any
   ) {}
 
@@ -111,10 +112,6 @@ export class SliderLightboxComponent
       }
     }
   }
-
-  ngOnInit() {}
-
-  ngAfterViewInit() {}
 
   ngOnDestroy() {
     this.resetState();
