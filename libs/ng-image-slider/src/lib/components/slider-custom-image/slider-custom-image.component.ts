@@ -14,7 +14,7 @@ const youtubeRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([
   validVideoExtensions = ['mp4'];
 
 @Component({
-  selector: 'zy2ba-custom-img',
+  selector: 'ng-image-slider-slide',
   templateUrl: './slider-custom-image.component.html',
 })
 export class SliderCustomImageComponent implements OnChanges {

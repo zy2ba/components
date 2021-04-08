@@ -18,7 +18,7 @@ import { LightboxArrowClickMessage } from '../../const/lightbox.const';
 import { NisImage } from '../../type/img.type';
 
 @Component({
-  selector: 'zy2ba-slider-lightbox',
+  selector: 'ng-image-slider-lightbox',
   templateUrl: './slider-lightbox.component.html',
 })
 export class SliderLightboxComponent

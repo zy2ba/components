@@ -188,7 +188,7 @@
       "projectType": "library",
       "root": "libs/ng-image-slider",
       "sourceRoot": "libs/ng-image-slider/src",
-      "prefix": "zy2ba",
+      "prefix": "ng-image-slider",
       "architect": {
         "build": {
           "builder": "@nrwl/angular:package",

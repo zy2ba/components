@@ -27,7 +27,7 @@ const NEXT_ARROW_CLICK_MESSAGE = 'next',
   PREV_ARROW_CLICK_MESSAGE = 'previous';
 
 @Component({
-  selector: 'zy2ba-ng-image-slider',
+  selector: 'ng-image-slider',
   templateUrl: './ng-image-slider.component.html',
   styleUrls: ['./ng-image-slider.component.scss'],
   encapsulation: ViewEncapsulation.None,
