@@ -21,7 +21,7 @@ import {
 
 import { isPlatformBrowser } from '@angular/common';
 import { NgImageSliderService } from '../../services/ng-image-slider.service';
-import { NisImage, NisInnerImage } from '../../type/img.type';
+import { NisSlide, NisInnerSlide } from '../../type/img.type';
 
 const NEXT_ARROW_CLICK_MESSAGE = 'next',
   PREV_ARROW_CLICK_MESSAGE = 'previous';
@@ -37,8 +37,8 @@ export class NgImageSliderComponent
   // for slider
   sliderMainDivWidth: number = 0;
   imageParentDivWidth: number = 0;
-  imageObj: NisInnerImage[] = [];
-  ligthboxImageObj: NisInnerImage[] = [];
+  imageObj: NisInnerSlide[] = [];
+  ligthboxImageObj: NisInnerSlide[] = [];
   totalImages: number = 0;
   leftPos: number = 0;
   effectStyle: string = 'all 1s ease-in-out';
@@ -112,7 +112,7 @@ export class NgImageSliderComponent
       this.effectStyle = `all ${this.speed}s ease-in-out`;
     }
   }
-  @Input() images: Array<object> = [];
+  @Input() images: NisSlide[] = [];
   @Input() set slideImage(count: number) {
     if (typeof count === 'number' && count >= 0) {
       this.slideImageCount = Math.round(count);
@@ -270,7 +270,7 @@ export class NgImageSliderComponent
     }
   }
 
-  setSliderImages(imgObj: NisImage[]) {
+  setSliderImages(imgObj: NisSlide[]) {
     if (imgObj && imgObj instanceof Array && imgObj.length) {
       this.imageObj = imgObj.map((img, index) => ({ index, ...img }));
       this.ligthboxImageObj = [...this.imageObj];

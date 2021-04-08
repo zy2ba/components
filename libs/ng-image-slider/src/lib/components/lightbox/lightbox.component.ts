@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -8,14 +7,13 @@ import {
   Inject,
   Input,
   OnDestroy,
-  OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { LightboxArrowClickMessage } from '../../const/lightbox.const';
-import { NisImage } from '../../type/img.type';
+import { NisSlide } from '../../type/img.type';
 
 @Component({
   selector: 'ng-image-slider-lightbox',
@@ -42,7 +40,7 @@ export class LightboxComponent implements OnDestroy {
   @ViewChild('lightboxDiv', { static: false }) lightboxDiv: any;
   @ViewChild('lightboxImageDiv', { static: false }) lightboxImageDiv: any;
   // @Inputs
-  @Input() images: NisImage[] = [];
+  @Input() images: NisSlide[] = [];
   @Input() videoAutoPlay = false;
   @Input() direction = 'ltr';
   @Input() paginationShow = false;

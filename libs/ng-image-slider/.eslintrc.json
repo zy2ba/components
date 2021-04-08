@@ -17,6 +17,13 @@
         "@angular-eslint/component-selector": [
           "error",
           { "type": "element", "prefix": "ng-image-slider", "style": "kebab-case" }
+        ],
+        "@typescript-eslint/no-inferrable-types": [
+          "error",
+          {
+            "ignoreParameters": true,
+            "ignoreProperties": true
+          }
         ]
       }
     },

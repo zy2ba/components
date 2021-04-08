@@ -1,7 +1,8 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nrwl/nx"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@nrwl/nx", "@typescript-eslint"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -14,6 +15,13 @@
             "depConstraints": [
               { "sourceTag": "*", "onlyDependOnLibsWithTags": ["*"] }
             ]
+          }
+        ],
+        "@typescript-eslint/no-inferrable-types": [
+          "error",
+          {
+            "ignoreParameters": true,
+            "ignoreProperties": true
           }
         ]
       }

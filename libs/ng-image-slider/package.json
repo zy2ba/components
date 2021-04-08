@@ -1,11 +1,29 @@
 {
   "name": "@zy2ba/ng-image-slider",
-  "version": "0.0.1",
+  "version": "1.0.0-rc.3",
+  "description": "Angular Image slider with lightbox. An Angular responsive image slider with lightbox popup. Also support youtube url, image base64 string and mp4 video urls and base64 string.",
   "peerDependencies": {
     "@angular/common": "^11.2.8",
     "@angular/core": "^11.2.8"
   },
-  "dependencies": {
-    "tslib": "^2.0.0"
+  "keywords": [
+    "Angular",
+    "Angular image slider",
+    "Angular video slider",
+    "Angular Carousel",
+    "responsive slider",
+    "slideshow",
+    "carousel",
+    "slider"
+  ],
+  "author": "Zy2ba <zy2bas@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zy2ba/ng-image-slider"
+  },
+  "homepage": "https://github.com/zy2ba/ng-image-slider",
+  "bugs": {
+    "url": "https://github.com/zy2ba/ng-image-slider/issues"
   }
 }

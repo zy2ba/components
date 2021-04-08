@@ -1,10 +1,10 @@
-export interface NisImage {
+export interface NisSlide {
   image?: string;
   video?: string;
   title?: string;
   posterImage?: string;
   alt?: string;
 }
-export interface NisInnerImage extends NisImage {
+export interface NisInnerSlide extends NisSlide {
   index: number;
 }
