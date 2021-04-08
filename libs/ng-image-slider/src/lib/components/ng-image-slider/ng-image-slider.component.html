@@ -71,11 +71,11 @@
       >
     </div>
     <div *ngIf="imageObj.length && paginationShow" class="ng-main-pagination">
-      {{ visiableImageIndex + 1 }} of {{ totalImages }}
+      {{ visibleImageIndex + 1 }} of {{ totalImages }}
     </div>
   </div>
 </div>
-<div *ngIf="ligthboxShow">
+<div *ngIf="isLightboxShow">
   <ng-image-slider-lightbox
     [paginationShow]="paginationShow"
     [showVideoControls]="showVideoControls"
@@ -84,12 +84,11 @@
     [infinite]="infinite"
     [animationSpeed]="speed"
     [imageIndex]="activeImageIndex"
-    [show]="ligthboxShow"
+    [show]="isLightboxShow"
     [direction]="textDirection"
     [videoAutoPlay]="videoAutoPlay"
-    (prevImage)="lightboxArrowClickHandler($event)"
-    (nextImage)="lightboxArrowClickHandler($event)"
-    (close)="close()"
+    (arrowClick)="lightboxArrowClickHandler($event)"
+    (closeClick)='close()'
   >
   </ng-image-slider-lightbox>
 </div>

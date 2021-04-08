@@ -1,5 +1,4 @@
 import {
-  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -8,11 +7,9 @@ import {
   Input,
   OnDestroy,
   Output,
-  ViewChild,
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { DomSanitizer } from '@angular/platform-browser';
-import { LightboxArrowClickMessage } from '../../const/lightbox.const';
+import { ArrowClickEvent } from '../../const/arrow-click.const';
 import { NisSlide } from '../../type/img.type';
 
 @Component({
@@ -25,7 +22,6 @@ export class LightboxComponent implements OnDestroy {
   private swipeLightboxImgTime?: number;
 
   totalImages = 0;
-  nextImageIndex = -1;
   popupWidth = 1200;
   marginLeft = 0;
   imageFullscreenView = false;
@@ -37,8 +33,6 @@ export class LightboxComponent implements OnDestroy {
   title = '';
   currentImageIndex = 0;
 
-  @ViewChild('lightboxDiv', { static: false }) lightboxDiv: any;
-  @ViewChild('lightboxImageDiv', { static: false }) lightboxImageDiv: any;
   // @Inputs
   @Input() images: NisSlide[] = [];
   @Input() videoAutoPlay = false;
@@ -49,17 +43,14 @@ export class LightboxComponent implements OnDestroy {
   @Input() showVideoControls = true;
 
   // @Output
-  @Output() close = new EventEmitter<any>();
-  @Output() prevImage = new EventEmitter<LightboxArrowClickMessage.PREV>();
-  @Output() nextImage = new EventEmitter<LightboxArrowClickMessage.NEXT>();
+  @Output() closeClick = new EventEmitter<void>();
+  @Output() arrowClick = new EventEmitter<ArrowClickEvent>();
 
   constructor(
-    private cdRef: ChangeDetectorRef,
-    private sanitizer: DomSanitizer,
     private elRef: ElementRef,
     // gets building error with Document type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    @Inject(DOCUMENT) private document: any
+    @Inject(DOCUMENT) private document: Document
   ) {}
 
   @Input()
@@ -74,7 +65,7 @@ export class LightboxComponent implements OnDestroy {
   set show(visiableFlag: boolean) {
     this.imageFullscreenView = visiableFlag;
     this.elRef.nativeElement.ownerDocument.body.style.overflow = '';
-    if (visiableFlag === true) {
+    if (visiableFlag) {
       this.elRef.nativeElement.ownerDocument.body.style.overflow = 'hidden';
       // this.getImageData();
       this.setPopupSliderWidth();
@@ -83,7 +74,7 @@ export class LightboxComponent implements OnDestroy {
 
   @Input()
   set animationSpeed(data: number) {
-    if (data && typeof data === 'number' && data >= 0.1 && data <= 5) {
+    if (data &&  data >= 0.1 && data <= 5) {
       this.speed = data;
     }
   }
@@ -119,10 +110,7 @@ export class LightboxComponent implements OnDestroy {
     if (window && window.innerWidth) {
       this.popupWidth = window.innerWidth;
       this.totalImages = this.images.length;
-      if (
-        typeof this.currentImageIndex === 'number' &&
-        this.currentImageIndex !== undefined
-      ) {
+      if (this.currentImageIndex !== undefined) {
         this.marginLeft = -1 * this.popupWidth * this.currentImageIndex;
         this.getImageData();
         this.nextPrevDisable();
@@ -134,14 +122,14 @@ export class LightboxComponent implements OnDestroy {
   }
 
   closeLightbox() {
-    this.close.emit();
+    this.closeClick.emit();
   }
 
   prevImageLightbox() {
     this.effectStyle = `all ${this.speed}s ease-in-out`;
     if (this.currentImageIndex > 0 && !this.lightboxPrevDisable) {
       this.currentImageIndex--;
-      this.prevImage.emit(LightboxArrowClickMessage.PREV);
+      this.arrowClick.emit(ArrowClickEvent.PREV);
       this.marginLeft = -1 * this.popupWidth * this.currentImageIndex;
       this.getImageData();
       this.nextPrevDisable();
@@ -155,7 +143,7 @@ export class LightboxComponent implements OnDestroy {
       !this.lightboxNextDisable
     ) {
       this.currentImageIndex++;
-      this.nextImage.emit(LightboxArrowClickMessage.NEXT);
+      this.arrowClick.emit(ArrowClickEvent.NEXT);
       this.marginLeft = -1 * this.popupWidth * this.currentImageIndex;
       this.getImageData();
       this.nextPrevDisable();
@@ -184,7 +172,6 @@ export class LightboxComponent implements OnDestroy {
   getImageData() {
     if (
       this.images?.length &&
-      typeof this.currentImageIndex === 'number' &&
       this.images[this.currentImageIndex] &&
       (this.images[this.currentImageIndex].image ||
         this.images[this.currentImageIndex].video)
@@ -192,27 +179,15 @@ export class LightboxComponent implements OnDestroy {
       this.title = this.images[this.currentImageIndex].title ?? '';
       this.totalImages = this.images.length;
       for (const iframeI in this.document.getElementsByTagName('iframe')) {
-        if (
-          this.document.getElementsByTagName('iframe')[iframeI] &&
-          this.document.getElementsByTagName('iframe')[iframeI].contentWindow &&
-          this.document.getElementsByTagName('iframe')[iframeI].contentWindow
-            .postMessage
-        ) {
-          this.document
-            .getElementsByTagName('iframe')
-            [iframeI].contentWindow.postMessage(
-              '{"event":"command","func":"pauseVideo","args":""}',
-              '*'
-            );
-        }
+        this.document
+          .getElementsByTagName('iframe')
+          [iframeI]?.contentWindow?.postMessage?.(
+            '{"event":"command","func":"pauseVideo","args":""}',
+            '*'
+          );
       }
       for (const videoI in this.document.getElementsByTagName('video')) {
-        if (
-          this.document.getElementsByTagName('video')[videoI] &&
-          this.document.getElementsByTagName('video')[videoI].pause
-        ) {
-          this.document.getElementsByTagName('video')[videoI].pause();
-        }
+        this.document.getElementsByTagName('video')[videoI]?.pause?.();
       }
     }
   }

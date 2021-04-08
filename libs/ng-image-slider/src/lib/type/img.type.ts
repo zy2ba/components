@@ -4,6 +4,7 @@ export interface NisSlide {
   title?: string;
   posterImage?: string;
   alt?: string;
+  thumbImage?: string;
 }
 export interface NisInnerSlide extends NisSlide {
   index: number;

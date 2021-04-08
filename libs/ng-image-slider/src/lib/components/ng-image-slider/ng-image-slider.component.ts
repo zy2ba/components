@@ -21,10 +21,8 @@ import {
 
 import { isPlatformBrowser } from '@angular/common';
 import { NgImageSliderService } from '../../services/ng-image-slider.service';
-import { NisSlide, NisInnerSlide } from '../../type/img.type';
-
-const NEXT_ARROW_CLICK_MESSAGE = 'next',
-  PREV_ARROW_CLICK_MESSAGE = 'previous';
+import { NisInnerSlide, NisSlide } from '../../type/img.type';
+import { ArrowClickEvent } from '../../const';
 
 @Component({
   selector: 'ng-image-slider',
@@ -107,42 +105,46 @@ export class NgImageSliderComponent
   }
   @Input()
   set animationSpeed(data: number) {
-    if (data && typeof data === 'number' && data >= 0.1 && data <= 5) {
+    if (data && data >= 0.1 && data <= 5) {
       this.speed = data;
       this.effectStyle = `all ${this.speed}s ease-in-out`;
     }
   }
   @Input() images: NisSlide[] = [];
   @Input() set slideImage(count: number) {
-    if (typeof count === 'number' && count >= 0) {
+    if (count >= 0) {
       this.slideImageCount = Math.round(count);
     }
   }
-  @Input() set autoSlide(count: any) {
+  @Input() set autoSlide(
+    count: number | boolean | { interval: number; stopOnHover?: boolean }
+  ) {
     if (
-      count &&
-      (typeof count === 'number' ||
+      !count ||
+      !(
+        typeof count === 'number' ||
         typeof count === 'boolean' ||
-        typeof count === 'object')
+        typeof count === 'object'
+      )
     ) {
-      if (typeof count === 'number' && count >= 1 && count <= 5) {
-        count = Math.round(count);
-      } else if (typeof count === 'boolean') {
-        count = 1;
-      } else if (
-        typeof count === 'object' &&
-        count.hasOwnProperty('interval') &&
-        Math.round(count['interval']) &&
-        Math.round(count['interval']) >= 1 &&
-        Math.round(count['interval']) <= 5
-      ) {
-        this.stopSlideOnHover = count.hasOwnProperty('stopOnHover')
-          ? count['stopOnHover']
-          : true;
-        count = Math.round(count['interval']);
-      }
-      this.autoSlideCount = count * 1000;
+      return;
     }
+    let currentCount = 0;
+    if (typeof count === 'number' && count >= 1 && count <= 5) {
+      currentCount = Math.round(count);
+    } else if (typeof count === 'boolean') {
+      currentCount = 1;
+    } else if (
+      typeof count === 'object' &&
+      'interval' in count &&
+      Math.round(count['interval']) &&
+      Math.round(count['interval']) >= 1 &&
+      Math.round(count['interval']) <= 5
+    ) {
+      this.stopSlideOnHover = Boolean(count.stopOnHover);
+      currentCount = Math.round(count['interval']);
+    }
+    this.autoSlideCount = currentCount * 1000;
   }
   @Input() set showArrow(flag: boolean) {
     this.showArrowButton = Boolean(flag);
@@ -156,13 +158,13 @@ export class NgImageSliderComponent
   // @Outputs
   @Output() imageClick = new EventEmitter<number>();
   @Output() arrowClick = new EventEmitter<string>();
-  @Output() lightboxArrowClick = new EventEmitter<object>();
-  @Output() lightboxClose = new EventEmitter<object>();
+  @Output() lightboxArrowClick = new EventEmitter<ArrowClickEvent>();
+  @Output() lightboxClose = new EventEmitter<void>();
 
   // for lightbox
-  ligthboxShow: boolean = false;
+  isLightboxShow: boolean = false;
   activeImageIndex: number = -1;
-  visiableImageIndex: number = 0;
+  visibleImageIndex: number = 0;
 
   @HostListener('window:resize', ['$event'])
   onResize() {
@@ -173,7 +175,7 @@ export class NgImageSliderComponent
     if (event && event.key) {
       if (
         event.key.toLowerCase() === 'arrowright' &&
-        !this.ligthboxShow &&
+        !this.isLightboxShow &&
         this.arrowKeyMove
       ) {
         this.next();
@@ -181,13 +183,13 @@ export class NgImageSliderComponent
 
       if (
         event.key.toLowerCase() === 'arrowleft' &&
-        !this.ligthboxShow &&
+        !this.isLightboxShow &&
         this.arrowKeyMove
       ) {
         this.prev();
       }
 
-      if (event.key.toLowerCase() === 'escape' && this.ligthboxShow) {
+      if (event.key.toLowerCase() === 'escape' && this.isLightboxShow) {
         this.close();
       }
     }
@@ -195,6 +197,7 @@ export class NgImageSliderComponent
 
   constructor(
     private cdRef: ChangeDetectorRef,
+    // eslint-disable-next-line @typescript-eslint/ban-types
     @Inject(PLATFORM_ID) private platformId: Object,
     public imageSliderService: NgImageSliderService,
     private elRef: ElementRef // @Inject(ElementRef) private _elementRef: ElementRef
@@ -228,7 +231,7 @@ export class NgImageSliderComponent
     if (this.autoSlideInterval !== undefined) {
       clearInterval(this.autoSlideInterval);
     }
-    if (this.ligthboxShow === true) {
+    if (this.isLightboxShow) {
       this.close();
     }
   }
@@ -236,8 +239,8 @@ export class NgImageSliderComponent
   ngOnChanges(changes: SimpleChanges) {
     if (
       changes.images &&
-      changes.images.hasOwnProperty('previousValue') &&
-      changes.images.hasOwnProperty('currentValue') &&
+      'previousValue' in changes.images &&
+      'currentValue' in changes.images &&
       changes.images.previousValue != changes.images.currentValue
     ) {
       this.setSliderImages(changes.images.currentValue);
@@ -271,7 +274,7 @@ export class NgImageSliderComponent
   }
 
   setSliderImages(imgObj: NisSlide[]) {
-    if (imgObj && imgObj instanceof Array && imgObj.length) {
+    if (Array.isArray(imgObj) && imgObj.length) {
       this.imageObj = imgObj.map((img, index) => ({ index, ...img }));
       this.ligthboxImageObj = [...this.imageObj];
       this.totalImages = this.imageObj.length;
@@ -340,7 +343,7 @@ export class NgImageSliderComponent
   }
 
   imageAutoSlide() {
-    if (this.infinite && this.autoSlideCount && !this.ligthboxShow) {
+    if (this.infinite && this.autoSlideCount && !this.isLightboxShow) {
       this.autoSlideInterval = setInterval(() => {
         this.next();
       }, this.autoSlideCount);
@@ -361,9 +364,9 @@ export class NgImageSliderComponent
         this.prevImg();
       }
 
-      this.arrowClick.emit(PREV_ARROW_CLICK_MESSAGE);
+      this.arrowClick.emit(ArrowClickEvent.PREV);
       this.sliderArrowDisableTeam();
-      this.getVisiableIndex();
+      this.getVisibleIndex();
     }
   }
 
@@ -375,9 +378,9 @@ export class NgImageSliderComponent
         this.nextImg();
       }
 
-      this.arrowClick.emit(NEXT_ARROW_CLICK_MESSAGE);
+      this.arrowClick.emit(ArrowClickEvent.NEXT);
       this.sliderArrowDisableTeam();
-      this.getVisiableIndex();
+      this.getVisibleIndex();
     }
   }
 
@@ -438,7 +441,7 @@ export class NgImageSliderComponent
     }, this.speed * 1000);
   }
 
-  getVisiableIndex() {
+  getVisibleIndex() {
     const currentIndex = Math.round(
       (Math.abs(this.leftPos) + this.sliderImageWidth) / this.sliderImageWidth
     );
@@ -446,7 +449,7 @@ export class NgImageSliderComponent
       this.imageObj[currentIndex - 1] &&
       this.imageObj[currentIndex - 1]['index'] !== undefined
     ) {
-      this.visiableImageIndex = this.imageObj[currentIndex - 1]['index'];
+      this.visibleImageIndex = this.imageObj[currentIndex - 1]['index'];
     }
   }
 
@@ -479,19 +482,19 @@ export class NgImageSliderComponent
   showLightbox() {
     if (this.imageObj.length) {
       this.imageMouseEnterHandler();
-      this.ligthboxShow = true;
+      this.isLightboxShow = true;
       this.elRef.nativeElement.ownerDocument.body.style.overflow = 'hidden';
     }
   }
 
   close() {
-    this.ligthboxShow = false;
+    this.isLightboxShow = false;
     this.elRef.nativeElement.ownerDocument.body.style.overflow = '';
     this.lightboxClose.emit();
     this.imageAutoSlide();
   }
 
-  lightboxArrowClickHandler(event: Event) {
+  lightboxArrowClickHandler(event: ArrowClickEvent) {
     this.lightboxArrowClick.emit(event);
   }
 

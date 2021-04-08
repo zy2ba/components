@@ -1,1 +1,1 @@
-export * from './lightbox.const'
+export * from './arrow-click.const'
