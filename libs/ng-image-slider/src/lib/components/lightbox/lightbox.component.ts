@@ -50,7 +50,7 @@ export class LightboxComponent implements OnDestroy {
     private elRef: ElementRef,
     // gets building error with Document type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: any
   ) {}
 
   @Input()
