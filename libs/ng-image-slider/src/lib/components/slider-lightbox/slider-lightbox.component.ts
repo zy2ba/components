@@ -14,9 +14,8 @@ import {
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
-
-const LIGHTBOX_NEXT_ARROW_CLICK_MESSAGE = 'lightbox next',
-  LIGHTBOX_PREV_ARROW_CLICK_MESSAGE = 'lightbox previous';
+import { LightboxArrowClickMessage } from '../../const/lightbox.const';
+import { NisImage } from '../../type/img.type';
 
 @Component({
   selector: 'zy2ba-slider-lightbox',
@@ -44,7 +43,7 @@ export class SliderLightboxComponent
   @ViewChild('lightboxDiv', { static: false }) lightboxDiv: any;
   @ViewChild('lightboxImageDiv', { static: false }) lightboxImageDiv: any;
   // @Inputs
-  @Input() images: Array<object> = [];
+  @Input() images: NisImage[] = [];
   @Input() videoAutoPlay = false;
   @Input() direction = 'ltr';
   @Input() paginationShow = false;
@@ -53,10 +52,9 @@ export class SliderLightboxComponent
   @Input() showVideoControls = true;
 
   // @Output
-  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter<any>();
-  @Output() prevImage = new EventEmitter<any>();
-  @Output() nextImage = new EventEmitter<any>();
+  @Output() prevImage = new EventEmitter<LightboxArrowClickMessage.PREV>();
+  @Output() nextImage = new EventEmitter<LightboxArrowClickMessage.NEXT>();
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -92,7 +90,7 @@ export class SliderLightboxComponent
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event) {
+  onResize() {
     this.effectStyle = 'none';
     this.setPopupSliderWidth();
   }
@@ -148,7 +146,7 @@ export class SliderLightboxComponent
     this.effectStyle = `all ${this.speed}s ease-in-out`;
     if (this.currentImageIndex > 0 && !this.lightboxPrevDisable) {
       this.currentImageIndex--;
-      this.prevImage.emit(LIGHTBOX_PREV_ARROW_CLICK_MESSAGE);
+      this.prevImage.emit(LightboxArrowClickMessage.PREV);
       this.marginLeft = -1 * this.popupWidth * this.currentImageIndex;
       this.getImageData();
       this.nextPrevDisable();
@@ -162,7 +160,7 @@ export class SliderLightboxComponent
       !this.lightboxNextDisable
     ) {
       this.currentImageIndex++;
-      this.nextImage.emit(LIGHTBOX_NEXT_ARROW_CLICK_MESSAGE);
+      this.nextImage.emit(LightboxArrowClickMessage.NEXT);
       this.marginLeft = -1 * this.popupWidth * this.currentImageIndex;
       this.getImageData();
       this.nextPrevDisable();
@@ -190,15 +188,13 @@ export class SliderLightboxComponent
 
   getImageData() {
     if (
-      this.images &&
-      this.images.length &&
+      this.images?.length &&
       typeof this.currentImageIndex === 'number' &&
-      this.currentImageIndex !== undefined &&
       this.images[this.currentImageIndex] &&
-      (this.images[this.currentImageIndex]['image'] ||
-        this.images[this.currentImageIndex]['video'])
+      (this.images[this.currentImageIndex].image ||
+        this.images[this.currentImageIndex].video)
     ) {
-      this.title = this.images[this.currentImageIndex]['title'] || '';
+      this.title = this.images[this.currentImageIndex].title ?? '';
       this.totalImages = this.images.length;
       for (const iframeI in this.document.getElementsByTagName('iframe')) {
         if (
@@ -234,34 +230,41 @@ export class SliderLightboxComponent
    * Swipe event handler
    * Reference from https://stackoverflow.com/a/44511007/2067646
    */
-  swipeLightboxImg(e: TouchEvent, when: string): void {
-    const coord: [number, number] = [
+  swipeLightboxImg(e: TouchEvent, when: 'start' | 'end'): void {
+    const coordinates: [number, number] = [
       e.changedTouches[0].pageX,
       e.changedTouches[0].pageY,
     ];
     const time = new Date().getTime();
 
     if (when === 'start') {
-      this.swipeLightboxImgCoord = coord;
+      this.swipeLightboxImgCoord = coordinates;
       this.swipeLightboxImgTime = time;
-    } else if (when === 'end') {
-      const direction = [
-        coord[0] - this.swipeLightboxImgCoord[0],
-        coord[1] - this.swipeLightboxImgCoord[1],
-      ];
-      const duration = time - this.swipeLightboxImgTime;
+      return;
+    }
+    if (
+      when !== 'end' ||
+      this.swipeLightboxImgCoord === undefined ||
+      this.swipeLightboxImgTime === undefined
+    ) {
+      return;
+    }
+    const direction = [
+      coordinates[0] - this.swipeLightboxImgCoord[0],
+      coordinates[1] - this.swipeLightboxImgCoord[1],
+    ];
+    const duration = time - this.swipeLightboxImgTime;
 
-      if (
-        duration < 1000 && //
-        Math.abs(direction[0]) > 30 && // Long enough
-        Math.abs(direction[0]) > Math.abs(direction[1] * 3)
-      ) {
-        // Horizontal enough
-        if (direction[0] < 0) {
-          this.nextImageLightbox();
-        } else {
-          this.prevImageLightbox();
-        }
+    if (
+      duration < 1000 && //
+      Math.abs(direction[0]) > 30 && // Long enough
+      Math.abs(direction[0]) > Math.abs(direction[1] * 3)
+    ) {
+      // Horizontal enough
+      if (direction[0] < 0) {
+        this.nextImageLightbox();
+      } else {
+        this.prevImageLightbox();
       }
     }
   }

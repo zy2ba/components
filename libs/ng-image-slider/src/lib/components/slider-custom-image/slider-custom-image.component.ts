@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { NgImageSliderService } from '../ng-image-slider.service';
+import { NgImageSliderService } from '../../services/ng-image-slider.service';
 
 const youtubeRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/,
   validFileExtensions = ['jpeg', 'jpg', 'gif', 'png'],
@@ -32,7 +32,7 @@ export class SliderCustomImageComponent implements OnChanges {
   @Input() currentImageIndex: number = 0;
   @Input() imageIndex?: number;
   @Input() speed: number = 1;
-  @Input() imageUrl?:string;
+  @Input() imageUrl?: string;
   @Input() isVideo = false;
   @Input() alt: string = '';
   @Input() title: string = '';
@@ -61,9 +61,12 @@ export class SliderCustomImageComponent implements OnChanges {
   }
 
   setUrl() {
+    if (this.imageUrl === undefined) {
+      return;
+    }
     const url = this.imageUrl;
     this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-    this.fileExtension = url.split('.').pop().split(/\#|\?/)[0];
+    this.fileExtension = url.split('.').pop()?.split(/[#?]/)[0] ?? '';
     if (
       this.imageSliderService.base64FileExtension(url) &&
       (validFileExtensions.indexOf(
@@ -117,13 +120,19 @@ export class SliderCustomImageComponent implements OnChanges {
     }
   }
 
-  videoClickHandler(event) {
-    if (event && event.srcElement && !this.showVideoControls) {
-      if (event.srcElement.paused) {
-        event.srcElement.play();
-      } else {
-        event.srcElement.pause();
-      }
+  videoClickHandler(event: MouseEvent) {
+    if (!event || this.showVideoControls) {
+      return;
+    }
+    const target = (event.srcElement ??
+      event.target) as HTMLVideoElement | null;
+    if (!target) {
+      return;
+    }
+    if (target.paused) {
+      target.play();
+    } else {
+      target.pause();
     }
   }
 }

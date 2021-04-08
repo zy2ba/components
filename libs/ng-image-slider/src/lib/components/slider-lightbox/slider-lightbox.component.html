@@ -22,7 +22,7 @@
             (touchend)="swipeLightboxImg($event, 'end')"
             #lightboxImageDiv
           >
-            <custom-img
+            <ng-image-slider-slide
               [loading]="i > 0 ? 'lazy' : null"
               [imageUrl]="img?.image || img?.video"
               [isVideo]="!!(img?.posterImage || img?.video)"
@@ -36,7 +36,7 @@
               [showVideo]="true"
               [direction]="direction"
             >
-            </custom-img>
+            </ng-image-slider-slide>
           </div>
         </ng-container>
       </div>

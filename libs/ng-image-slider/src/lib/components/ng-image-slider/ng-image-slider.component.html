@@ -34,7 +34,7 @@
           (mouseleave)="stopSlideOnHover && imageAutoSlide()"
           #imageDiv
         >
-          <custom-img
+          <ng-image-slider-slide
             [imageUrl]="img?.thumbImage || img?.posterImage || img?.video"
             [isVideo]="!!(img?.posterImage || img?.video)"
             [alt]="img?.alt || img?.title || ''"
@@ -42,7 +42,7 @@
             [direction]="textDirection"
             [ratio]="manageImageRatio"
           >
-          </custom-img>
+          </ng-image-slider-slide>
           <div [dir]="textDirection" class="caption" *ngIf="img?.title">
             {{ img?.title }}
           </div>
@@ -76,7 +76,7 @@
   </div>
 </div>
 <div *ngIf="ligthboxShow">
-  <zy2ba-slider-lightbox
+  <ng-image-slider-lightbox
     [paginationShow]="paginationShow"
     [showVideoControls]="showVideoControls"
     [arrowKeyMove]="arrowKeyMove"
@@ -91,5 +91,5 @@
     (nextImage)="lightboxArrowClickHandler($event)"
     (close)="close()"
   >
-  </zy2ba-slider-lightbox>
+  </ng-image-slider-lightbox>
 </div>

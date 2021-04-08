@@ -20,7 +20,8 @@ import {
 } from '@angular/core';
 
 import { isPlatformBrowser } from '@angular/common';
-import { NgImageSliderService } from './ng-image-slider.service';
+import { NgImageSliderService } from '../../services/ng-image-slider.service';
+import { NisImage, NisInnerImage } from '../../type/img.type';
 
 const NEXT_ARROW_CLICK_MESSAGE = 'next',
   PREV_ARROW_CLICK_MESSAGE = 'previous';
@@ -36,8 +37,8 @@ export class NgImageSliderComponent
   // for slider
   sliderMainDivWidth: number = 0;
   imageParentDivWidth: number = 0;
-  imageObj: Array<object> = [];
-  ligthboxImageObj: Array<object> = [];
+  imageObj: NisInnerImage[] = [];
+  ligthboxImageObj: NisInnerImage[] = [];
   totalImages: number = 0;
   leftPos: number = 0;
   effectStyle: string = 'all 1s ease-in-out';
@@ -269,12 +270,9 @@ export class NgImageSliderComponent
     }
   }
 
-  setSliderImages(imgObj: object[]) {
+  setSliderImages(imgObj: NisImage[]) {
     if (imgObj && imgObj instanceof Array && imgObj.length) {
-      this.imageObj = imgObj.map((img, index) => {
-        img['index'] = index;
-        return img;
-      });
+      this.imageObj = imgObj.map((img, index) => ({ index, ...img }));
       this.ligthboxImageObj = [...this.imageObj];
       this.totalImages = this.imageObj.length;
       // this.imageParentDivWidth = imgObj.length * this.sliderImageSizeWithPadding;
@@ -333,7 +331,7 @@ export class NgImageSliderComponent
     this.nextPrevSliderButtonDisable();
   }
 
-  imageOnClick(index) {
+  imageOnClick(index: number) {
     this.activeImageIndex = index;
     if (this.imagePopup) {
       this.showLightbox();
@@ -493,7 +491,7 @@ export class NgImageSliderComponent
     this.imageAutoSlide();
   }
 
-  lightboxArrowClickHandler(event) {
+  lightboxArrowClickHandler(event: Event) {
     this.lightboxArrowClick.emit(event);
   }
 
@@ -501,7 +499,7 @@ export class NgImageSliderComponent
    * Swipe event handler
    * Reference from https://stackoverflow.com/a/44511007/2067646
    */
-  swipe(e: TouchEvent, when: string): void {
+  swipe(e: TouchEvent, when: 'start' | 'end'): void {
     const coord: [number, number] = [
       e.changedTouches[0].pageX,
       e.changedTouches[0].pageY,
@@ -511,24 +509,30 @@ export class NgImageSliderComponent
     if (when === 'start') {
       this.swipeCoord = coord;
       this.swipeTime = time;
-    } else if (when === 'end') {
-      const direction = [
-        coord[0] - this.swipeCoord[0],
-        coord[1] - this.swipeCoord[1],
-      ];
-      const duration = time - this.swipeTime;
+    }
+    if (
+      when !== 'end' ||
+      this.swipeCoord === undefined ||
+      this.swipeTime === undefined
+    ) {
+      return;
+    }
+    const direction = [
+      coord[0] - this.swipeCoord[0],
+      coord[1] - this.swipeCoord[1],
+    ];
+    const duration = time - this.swipeTime;
 
-      if (
-        duration < 1000 && //
-        Math.abs(direction[0]) > 30 && // Long enough
-        Math.abs(direction[0]) > Math.abs(direction[1] * 3)
-      ) {
-        // Horizontal enough
-        if (direction[0] < 0) {
-          this.next();
-        } else {
-          this.prev();
-        }
+    if (
+      duration < 1000 && //
+      Math.abs(direction[0]) > 30 && // Long enough
+      Math.abs(direction[0]) > Math.abs(direction[1] * 3)
+    ) {
+      // Horizontal enough
+      if (direction[0] < 0) {
+        this.next();
+      } else {
+        this.prev();
       }
     }
   }
