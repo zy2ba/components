@@ -1,0 +1,44 @@
+<div *ngIf="fileUrl" class="custom-image-main">
+  <ng-container *ngIf="type === IMAGE && fileUrl">
+    <img
+      [alt]="alt"
+      [ngClass]="{ ratio: ratio }"
+      [src]="fileUrl"
+      [title]="title"
+      loading="lazy"
+      class="image"
+    />
+  </ng-container>
+  <ng-container *ngIf="type === YOUTUBE && fileUrl">
+    <iframe
+      [src]="fileUrl"
+      allow="autoplay"
+      allowfullscreen
+      class="youtube"
+      frameborder="0"
+    ></iframe>
+  </ng-container>
+  <ng-container *ngIf="type === VIDEO">
+    <video
+      (click)="videoClickHandler($event)"
+      [attr.controls]="showVideoControls ? showVideoControls : null"
+      [autoplay]="videoAutoPlay"
+      [id]="'video_' + imageIndex"
+      [ngClass]="{ ratio: ratio }"
+      class="video"
+      controlsList="nodownload"
+      type="video/mp4"
+    >
+      <source [src]="fileUrl" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </ng-container>
+
+  <div *ngIf="!fileUrl" [dir]="direction" class="invalid-msg">
+    Invalid file format
+  </div>
+  <span
+    *ngIf="type === YOUTUBE || type === VIDEO || isVideo"
+    class="youtube-icon"
+  ></span>
+</div>

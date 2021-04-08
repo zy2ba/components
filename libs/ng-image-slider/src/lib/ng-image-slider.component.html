@@ -1,0 +1,95 @@
+<div class="ng-image-slider" [ngStyle]="{ height: sliderImageHeight + 'px' }">
+  <div class="ng-image-slider-container">
+    <div
+      class="main"
+      [ngStyle]="{ height: sliderImageHeight + 'px' }"
+      #sliderMain
+    >
+      <div
+        class="main-inner"
+        *ngIf="imageObj.length"
+        [ngClass]="{ 'with-ng-main-pagination': paginationShow }"
+        [ngStyle]="{
+          'margin-left': leftPos + 'px',
+          width: imageParentDivWidth + 'px',
+          transition: effectStyle
+        }"
+        (touchstart)="swipe($event, 'start')"
+        (touchend)="swipe($event, 'end')"
+      >
+        <div
+          *ngFor="let img of imageObj; let i = index"
+          [ngClass]="{
+            'image-popup': imagePopup,
+            'selected-image': activeImageIndex == i
+          }"
+          [ngStyle]="{
+            width: sliderImageWidth + 'px',
+            'margin-left': imageMargin + 'px',
+            'margin-right': imageMargin + 'px'
+          }"
+          class="img-div"
+          (click)="imageOnClick(img.index)"
+          (mouseenter)="stopSlideOnHover && imageMouseEnterHandler()"
+          (mouseleave)="stopSlideOnHover && imageAutoSlide()"
+          #imageDiv
+        >
+          <custom-img
+            [imageUrl]="img?.thumbImage || img?.posterImage || img?.video"
+            [isVideo]="!!(img?.posterImage || img?.video)"
+            [alt]="img?.alt || img?.title || ''"
+            [title]="img?.title || img?.alt || ''"
+            [direction]="textDirection"
+            [ratio]="manageImageRatio"
+          >
+          </custom-img>
+          <div [dir]="textDirection" class="caption" *ngIf="img?.title">
+            {{ img?.title }}
+          </div>
+        </div>
+      </div>
+      <div class="ng-image-slider-error" *ngIf="!imageObj.length">
+        <span class="ng-image-slider-loader"></span>
+      </div>
+      <a
+        *ngIf="showArrowButton && imageObj.length > 1"
+        [ngClass]="{ disable: sliderPrevDisable }"
+        class="prev icons prev-icon"
+        (click)="prev()"
+        (mouseenter)="stopSlideOnHover && imageMouseEnterHandler()"
+        (mouseleave)="stopSlideOnHover && imageAutoSlide()"
+        >&lsaquo;</a
+      >
+      <a
+        *ngIf="showArrowButton && imageObj.length > 1"
+        [ngClass]="{ disable: sliderNextDisable }"
+        class="next icons next-icon"
+        (click)="next()"
+        (mouseenter)="imageMouseEnterHandler()"
+        (mouseleave)="imageAutoSlide()"
+        >&rsaquo;</a
+      >
+    </div>
+    <div *ngIf="imageObj.length && paginationShow" class="ng-main-pagination">
+      {{ visiableImageIndex + 1 }} of {{ totalImages }}
+    </div>
+  </div>
+</div>
+<div *ngIf="ligthboxShow">
+  <zy2ba-slider-lightbox
+    [paginationShow]="paginationShow"
+    [showVideoControls]="showVideoControls"
+    [arrowKeyMove]="arrowKeyMove"
+    [images]="ligthboxImageObj"
+    [infinite]="infinite"
+    [animationSpeed]="speed"
+    [imageIndex]="activeImageIndex"
+    [show]="ligthboxShow"
+    [direction]="textDirection"
+    [videoAutoPlay]="videoAutoPlay"
+    (prevImage)="lightboxArrowClickHandler($event)"
+    (nextImage)="lightboxArrowClickHandler($event)"
+    (close)="close()"
+  >
+  </zy2ba-slider-lightbox>
+</div>
