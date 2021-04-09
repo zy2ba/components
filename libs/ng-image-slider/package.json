@@ -6,6 +6,9 @@
     "@angular/common": "^11.2.8",
     "@angular/core": "^11.2.8"
   },
+  "dependencies": {
+    "@ng-web-apis/common": "^1.9.0"
+  },
   "keywords": [
     "Angular",
     "Angular image slider",

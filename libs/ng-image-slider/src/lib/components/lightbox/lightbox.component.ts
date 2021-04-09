@@ -47,10 +47,11 @@ export class LightboxComponent implements OnDestroy {
   @Output() arrowClick = new EventEmitter<ArrowClickEvent>();
 
   constructor(
-    private elRef: ElementRef,
+    private readonly elRef: ElementRef,
     // gets building error with Document type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    @Inject(DOCUMENT) private document: any
+    @Inject(DOCUMENT) private readonly document: any,
+    @Inject(Window) private readonly window: Window
   ) {}
 
   @Input()
@@ -107,14 +108,14 @@ export class LightboxComponent implements OnDestroy {
   }
 
   setPopupSliderWidth() {
-    if (window && window.innerWidth) {
-      this.popupWidth = window.innerWidth;
+    if (this.window && this.window.innerWidth) {
+      this.popupWidth = this.window.innerWidth;
       this.totalImages = this.images.length;
       if (this.currentImageIndex !== undefined) {
         this.marginLeft = -1 * this.popupWidth * this.currentImageIndex;
         this.getImageData();
         this.nextPrevDisable();
-        setTimeout(() => {
+        this.window.setTimeout(() => {
           this.showLoading = false;
         }, 500);
       }
@@ -153,7 +154,7 @@ export class LightboxComponent implements OnDestroy {
   nextPrevDisable() {
     this.lightboxNextDisable = true;
     this.lightboxPrevDisable = true;
-    setTimeout(() => {
+    this.window.setTimeout(() => {
       this.applyButtonDisableCondition();
     }, this.speed * 1000);
   }

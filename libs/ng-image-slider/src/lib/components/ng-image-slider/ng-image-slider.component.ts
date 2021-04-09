@@ -20,9 +20,9 @@ import {
 } from '@angular/core';
 
 import { isPlatformBrowser } from '@angular/common';
-import { NgImageSliderService } from '../../services/ng-image-slider.service';
 import { NisInnerSlide, NisSlide } from '../../type/img.type';
 import { ArrowClickEvent } from '../../const';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Component({
   selector: 'ng-image-slider',
@@ -199,8 +199,8 @@ export class NgImageSliderComponent
     private cdRef: ChangeDetectorRef,
     // eslint-disable-next-line @typescript-eslint/ban-types
     @Inject(PLATFORM_ID) private platformId: Object,
-    public imageSliderService: NgImageSliderService,
-    private elRef: ElementRef // @Inject(ElementRef) private _elementRef: ElementRef
+    private readonly elRef: ElementRef, // @Inject(ElementRef) private _elementRef: ElementRef,
+    @Inject(WINDOW) private readonly window: Window
   ) {}
 
   ngOnInit() {
@@ -306,7 +306,11 @@ export class NgImageSliderComponent
       }
     }
 
-    if (window && window.innerHeight && this.sliderImageReceivedHeight) {
+    if (
+      this.window &&
+      this.window.innerHeight &&
+      this.sliderImageReceivedHeight
+    ) {
       if (typeof this.sliderImageReceivedHeight === 'number') {
         this.sliderImageHeight = this.sliderImageReceivedHeight;
       } else if (typeof this.sliderImageReceivedHeight === 'string') {
@@ -314,7 +318,8 @@ export class NgImageSliderComponent
           this.sliderImageHeight = parseFloat(this.sliderImageReceivedHeight);
         } else if (this.sliderImageReceivedHeight.indexOf('%') >= 0) {
           this.sliderImageHeight = +(
-            (window.innerHeight * parseFloat(this.sliderImageReceivedHeight)) /
+            (this.window.innerHeight *
+              parseFloat(this.sliderImageReceivedHeight)) /
             100
           ).toFixed(2);
         } else if (parseFloat(this.sliderImageReceivedHeight)) {
@@ -344,7 +349,7 @@ export class NgImageSliderComponent
 
   imageAutoSlide() {
     if (this.infinite && this.autoSlideCount && !this.isLightboxShow) {
-      this.autoSlideInterval = setInterval(() => {
+      this.autoSlideInterval = this.window.setInterval(() => {
         this.next();
       }, this.autoSlideCount);
     }
@@ -414,7 +419,7 @@ export class NgImageSliderComponent
     this.effectStyle = `all ${this.speed}s ease-in-out`;
     this.leftPos = 0;
 
-    setTimeout(() => {
+    this.window.setTimeout(() => {
       this.effectStyle = 'none';
       this.leftPos =
         -1 * this.sliderImageSizeWithPadding * this.slideImageCount;
@@ -430,7 +435,7 @@ export class NgImageSliderComponent
   infiniteNextImg() {
     this.effectStyle = `all ${this.speed}s ease-in-out`;
     this.leftPos = -2 * this.sliderImageSizeWithPadding * this.slideImageCount;
-    setTimeout(() => {
+    this.window.setTimeout(() => {
       this.effectStyle = 'none';
       for (let i = 0; i < this.slideImageCount; i++) {
         this.imageObj.push(this.imageObj[this.slideImageCount]);
@@ -459,7 +464,7 @@ export class NgImageSliderComponent
   sliderArrowDisableTeam() {
     this.sliderNextDisable = true;
     this.sliderPrevDisable = true;
-    setTimeout(() => {
+    this.window.setTimeout(() => {
       this.nextPrevSliderButtonDisable();
     }, this.speed * 1000);
   }

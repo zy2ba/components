@@ -1,6 +1,14 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Inject,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NgImageSliderService } from '../../services/ng-image-slider.service';
+import { WINDOW } from '@ng-web-apis/common';
+import { DOCUMENT } from '@angular/common';
 
 const youtubeRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\?v=)([^#&?]*).*/,
   validFileExtensions = ['jpeg', 'jpg', 'gif', 'png'],
@@ -35,7 +43,9 @@ export class SlideComponent implements OnChanges {
 
   constructor(
     public imageSliderService: NgImageSliderService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    @Inject(WINDOW) private readonly window: Window,
+    @Inject(DOCUMENT) private readonly document: Document
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
@@ -96,12 +106,12 @@ export class SlideComponent implements OnChanges {
       this.type = this.VIDEO;
       if (
         this.videoAutoPlay &&
-        document.getElementById(`video_${this.imageIndex}`)
+        this.document.getElementById(`video_${this.imageIndex}`)
       ) {
-        const videoObj: any = document.getElementById(
+        const videoObj: any = this.document.getElementById(
           `video_${this.imageIndex}`
         );
-        setTimeout(() => {
+        this.window.setTimeout(() => {
           videoObj.play();
         }, this.speed * 1000);
       }
