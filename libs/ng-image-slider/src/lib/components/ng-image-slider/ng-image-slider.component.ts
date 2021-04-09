@@ -200,7 +200,7 @@ export class NgImageSliderComponent
     // eslint-disable-next-line @typescript-eslint/ban-types
     @Inject(PLATFORM_ID) private platformId: Object,
     private readonly elRef: ElementRef, // @Inject(ElementRef) private _elementRef: ElementRef,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WINDOW) private readonly window: any
   ) {}
 
   ngOnInit() {

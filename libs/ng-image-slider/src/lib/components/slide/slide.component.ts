@@ -44,8 +44,8 @@ export class SlideComponent implements OnChanges {
   constructor(
     public imageSliderService: NgImageSliderService,
     private sanitizer: DomSanitizer,
-    @Inject(WINDOW) private readonly window: Window,
-    @Inject(DOCUMENT) private readonly document: Document
+    @Inject(WINDOW) private readonly window: any,
+    @Inject(DOCUMENT) private readonly document: any
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
