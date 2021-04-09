@@ -75,7 +75,7 @@ export class LightboxComponent implements OnDestroy {
 
   @Input()
   set animationSpeed(data: number) {
-    if (data &&  data >= 0.1 && data <= 5) {
+    if (data && data >= 0.1 && data <= 5) {
       this.speed = data;
     }
   }

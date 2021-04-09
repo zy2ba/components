@@ -12,11 +12,19 @@
       "rules": {
         "@angular-eslint/directive-selector": [
           "error",
-          { "type": "attribute", "prefix": "ng-image-slider", "style": "camelCase" }
+          {
+            "type": "attribute",
+            "prefix": "ng-image-slider",
+            "style": "camelCase"
+          }
         ],
         "@angular-eslint/component-selector": [
           "error",
-          { "type": "element", "prefix": "ng-image-slider", "style": "kebab-case" }
+          {
+            "type": "element",
+            "prefix": "ng-image-slider",
+            "style": "kebab-case"
+          }
         ],
         "@typescript-eslint/no-inferrable-types": [
           "error",

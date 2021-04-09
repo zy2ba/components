@@ -7,11 +7,7 @@ import { NgImageSliderService } from './services/ng-image-slider.service';
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [
-    NgImageSliderComponent,
-    SlideComponent,
-    LightboxComponent,
-  ],
+  declarations: [NgImageSliderComponent, SlideComponent, LightboxComponent],
   providers: [NgImageSliderService],
   exports: [NgImageSliderComponent],
 })
