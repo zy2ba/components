@@ -1,1 +1,1 @@
-export * from './arrow-click.const'
+export * from './arrow-click.const';

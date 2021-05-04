@@ -1,1 +1,1 @@
-export * from './ng-image-slider.component'
+export * from './ng-image-slider.component';

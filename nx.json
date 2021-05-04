@@ -26,6 +26,10 @@
   "projects": {
     "example": { "tags": [] },
     "example-e2e": { "tags": [], "implicitDependencies": ["example"] },
-    "ng-image-slider": { "tags": [] }
+    "ng-image-slider": { "tags": [] },
+    "ng-image-slider-e2e": {
+      "tags": [],
+      "implicitDependencies": ["ng-image-slider"]
+    }
   }
 }

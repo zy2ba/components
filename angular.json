@@ -218,6 +218,63 @@
             "jestConfig": "libs/ng-image-slider/jest.config.js",
             "passWithNoTests": true
           }
+        },
+        "storybook": {
+          "builder": "@nrwl/storybook:storybook",
+          "options": {
+            "uiFramework": "@storybook/angular",
+            "port": 4400,
+            "config": {
+              "configFolder": "libs/ng-image-slider/.storybook"
+            }
+          },
+          "configurations": {
+            "ci": {
+              "quiet": true
+            }
+          }
+        },
+        "build-storybook": {
+          "builder": "@nrwl/storybook:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "uiFramework": "@storybook/angular",
+            "outputPath": "dist/storybook/ng-image-slider",
+            "config": {
+              "configFolder": "libs/ng-image-slider/.storybook"
+            }
+          },
+          "configurations": {
+            "ci": {
+              "quiet": true
+            }
+          }
+        }
+      }
+    },
+    "ng-image-slider-e2e": {
+      "root": "apps/ng-image-slider-e2e",
+      "sourceRoot": "apps/ng-image-slider-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/ng-image-slider-e2e/cypress.json",
+            "tsConfig": "apps/ng-image-slider-e2e/tsconfig.e2e.json",
+            "devServerTarget": "ng-image-slider:storybook"
+          },
+          "configurations": {
+            "ci": {
+              "devServerTarget": "ng-image-slider:storybook:ci"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/ng-image-slider-e2e/**/*.{js,ts}"]
+          }
         }
       }
     }
