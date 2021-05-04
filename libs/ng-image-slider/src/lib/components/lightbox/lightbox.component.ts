@@ -11,6 +11,7 @@ import {
 import { DOCUMENT } from '@angular/common';
 import { ArrowClickEvent } from '../../const/arrow-click.const';
 import { NisSlide } from '../../type/img.type';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Component({
   selector: 'ng-image-slider-lightbox',
@@ -51,7 +52,7 @@ export class LightboxComponent implements OnDestroy {
     // gets building error with Document type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     @Inject(DOCUMENT) private readonly document: any,
-    @Inject(Window) private readonly window: any
+    @Inject(WINDOW) private readonly window: any
   ) {}
 
   @Input()
