@@ -8,7 +8,12 @@
         "plugin:@nrwl/nx/angular",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
-      "parserOptions": { "project": ["libs/ng-image-slider/tsconfig.*?.json"] },
+      "parserOptions": {
+        "project": [
+          "libs/ng-image-slider/tsconfig.*?.json",
+          "libs\\ng-image-slider\\.storybook\\tsconfig.json"
+        ]
+      },
       "rules": {
         "@angular-eslint/directive-selector": [
           "error",

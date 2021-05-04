@@ -3,6 +3,9 @@
 An Angular responsive image slider with lightbox popup.
 Also support youtube and mp4 video urls.
 
+[![npm version](https://img.shields.io/npm/v/@zy2ba/ng-image-slider)](https://npmjs.com/package/@zy2ba/ng-image-slider)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/@zy2ba/ng-image-slider)](https://bundlephobia.com/result?p=@zy2ba/ng-image-slider)
+
 ## Angular versions compat:
 
 | Angular Version used to compile | Lib Version             |
